@@ -27,7 +27,7 @@ class SnackTests(TestCase):
     def test_snack_list_view(self):
         response = self.client.get(reverse("snack_list"))
         self.assertEqual(response.status_code, 200)
-        # self.assertContains(response, "pickle")
+        self.assertContains(response, "pickle")
         self.assertTemplateUsed(response, "snack_list.html")
 
     def test_snack_detail_view(self):
@@ -35,7 +35,7 @@ class SnackTests(TestCase):
         no_response = self.client.get("/100000/")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(no_response.status_code, 404)
-        # self.assertContains(response, "Purchaser: tester")
+        self.assertContains(response, "Reviewer: tester")
         self.assertTemplateUsed(response, "snack_detail.html")
 
     def test_snack_create_view(self):
