@@ -12,7 +12,7 @@ class Snack(models.Model):
   
   # user friendly display in admin
   def __str__(self):
-        return self.name
+        return self.title
 
   def get_absolute_url(self):
-        return reverse("thing_detail", args=[str(self.id)])
+        return reverse("snack_detail", args=[str(self.id)])
