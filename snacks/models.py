@@ -8,11 +8,11 @@ class Snack(models.Model):
 
   title = models.CharField(max_length=256)
   purchaser = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-  description = models.TextField(max_length=500)
+  description = models.TextField(default="")
   
   # user friendly display in admin
   def __str__(self):
-        return self.name
+        return self.title
 
   def get_absolute_url(self):
-        return reverse("thing_detail", args=[str(self.id)])
+        return reverse("snack_detail", args=[str(self.id)])

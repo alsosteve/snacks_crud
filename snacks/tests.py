@@ -1,65 +1,65 @@
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
-from .models import Thing
+from .models import Snack
 
 
-class ThingTests(TestCase):
+class SnackTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(
             username="tester", email="tester@email.com", password="pass"
         )
 
-        self.thing = Thing.objects.create(
-            name="pickle", rating=1, reviewer=self.user,
+        self.snack = Snack.objects.create(
+            title="pickle", description="words", purchaser=self.user,
         )
 
     def test_string_representation(self):
-        self.assertEqual(str(self.thing), "pickle")
+        self.assertEqual(str(self.snack), "pickle")
 
-    def test_thing_content(self):
-        self.assertEqual(f"{self.thing.name}", "pickle")
-        self.assertEqual(f"{self.thing.reviewer}", "tester")
-        self.assertEqual(self.thing.rating, 1)
+    def test_snack_content(self):
+        self.assertEqual(f"{self.snack.title}", "pickle")
+        self.assertEqual(f"{self.snack.purchaser}", "tester")
+        self.assertEqual(self.snack.description, "words")
 
-    def test_thing_list_view(self):
-        response = self.client.get(reverse("thing_list"))
+    def test_snack_list_view(self):
+        response = self.client.get(reverse("snack_list"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "pickle")
-        self.assertTemplateUsed(response, "thing_list.html")
+        self.assertTemplateUsed(response, "snack_list.html")
 
-    def test_thing_detail_view(self):
-        response = self.client.get(reverse("thing_detail", args="1"))
+    def test_snack_detail_view(self):
+        response = self.client.get(reverse("snack_detail", args="1"))
         no_response = self.client.get("/100000/")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(no_response.status_code, 404)
         self.assertContains(response, "Reviewer: tester")
-        self.assertTemplateUsed(response, "thing_detail.html")
+        self.assertTemplateUsed(response, "snack_detail.html")
 
-    def test_thing_create_view(self):
-        response = self.client.post(
-            reverse("thing_create"),
+    def test_snack_create_view(self):
+        response = self.client.post(reverse("snack_create"),
             {
-                "name": "Rake",
-                "rating": "2",
-                "reviewer": self.user.id,
+                "title": "Rake",
+                "description": "more words",
+                "purchaser": self.user.id,
             }, follow=True
         )
 
-        self.assertRedirects(response, reverse("thing_detail", args="2"))
-        self.assertContains(response, "Details about Rake")
+        self.assertRedirects(response, reverse("snack_detail", args="2"))
+        self.assertContains(response, "more words")
 
 
 
-    def test_thing_update_view_redirect(self):
+    def test_snack_update_view_redirect(self):
         response = self.client.post(
-            reverse("thing_update", args="1"),
-            {"name": "Updated name","rating":"3","reviewer":self.user.id}
+            reverse("snack_update", args="1"),
+            {"title": "Updated title","description":"3","purchaser":self.user.id}
         )
 
-        self.assertRedirects(response, reverse("thing_detail", args="1"))
+        self.assertRedirects(response, reverse("snack_detail", args="1"))
 
-    def test_thing_delete_view(self):
-        response = self.client.get(reverse("thing_delete", args="1"))
+    def test_snack_delete_view(self):
+        response = self.client.get(reverse("snack_delete", args="1"))
         self.assertEqual(response.status_code, 200)
